@@ -1,0 +1,11 @@
+7. auctionsDF.first
+8. auctionsDF.printSchema
+1. 10654
+2. 627
+3. 3
+4. auctionsDF.groupBy("aucID").count.collect
+5. auctionsDF.groupBy("aucID", "itemType").count.describe("count").show
+6. auctionsDF.groupBy("aucID", "itemType").agg(max("bid"), min("bid"), avg("bid")).collect
+7. 7685
+8. sqlContext.sql("select * from auctionsDF where itemType = 'xbox'")
+9. xboxes.describe("price").show
