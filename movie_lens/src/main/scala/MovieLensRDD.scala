@@ -3,13 +3,13 @@ import org.apache.commons.io.FileUtils
 import org.apache.spark.rdd.RDD
 import java.io.File
 
-object MovieLens extends SparkBase {
+object MovieLensRDD extends SparkBase {
   def main(args: Array[String]) = {
-    val rootPath: String = args(0)
+    val rootPath: String = System.getenv("HOME")
     val ratingsFile: RDD[String] = 
       sc.textFile(s"${rootPath}/ml-latest/ratings.csv")
     val moviesFile: RDD[String] = 
-      sc.textFile(s"{${rootPath}/ml-latest/movies.csv")
+      sc.textFile(s"${rootPath}/ml-latest/movies.csv")
 
     val ratingsHeader: String = ratingsFile.first
     val ratings: RDD[String] = ratingsFile filter (_ != ratingsHeader)

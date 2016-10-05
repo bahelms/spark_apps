@@ -4,9 +4,9 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 
 class SparkBase(appName: String = "MovieLens") {
-  def sparkConf: SparkConf = 
+  lazy val sparkConf: SparkConf = 
     new SparkConf().setAppName(appName)
 
-  def sc: SparkContext =
+  lazy val sc: SparkContext =
     new SparkContext(sparkConf)
 }
