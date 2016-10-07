@@ -1,22 +1,27 @@
-import spark_base.SparkBase
-import org.apache.commons.io.FileUtils
-import org.apache.spark.rdd.RDD
 import java.io.File
+import org.apache.commons.io.FileUtils
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.rdd.RDD
+import spark_helper.SparkHelper
 
-object MovieLensRDD extends SparkBase {
+object MovieLensDF {
   def main(args: Array[String]) = {
-    val home: String = System.getenv("HOME")
+    import spark.implicits._
+    val helper: SparkHelper = new SparkHelper("MovieLensDF")
+    val spark: SparkSession = helper.spark
 
-    val moviesRDD = 
-      sc.textFile(s"${home}/ml-latest/movies.csv").map(_ split ",").cache
-    val moviesHeader = moviesRDD.first
-    val moviesDF = moviesRDD.filter(_ != moviesHeader).toDF
+    val moviesDF = spark.read
+      .format("csv")
+      .option("header", "true")
+      .load(s"${helper.home}/ml-latest/movies.csv")
+      
+    val ratingsDF = spark.read
+      .format("csv")
+      .option("header", "true")
+      .load(s"${helper.home}/ml-latest/ratings.csv")
 
-
-
-
-
-    saveResultsFile(results, s"${home}/scala/spark_apps/movie_lens/output")
+    val moviesWithAvgRating =
+      moviesDF.join(ratingsDF, "movieId").groupBy("movieId").agg(avg("rating"))
   }
 
   def averageRatingPerMovie(ratings: RDD[String]): RDD[(Int, Float)] = {
